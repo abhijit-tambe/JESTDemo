@@ -2,11 +2,11 @@ const TodoController = require("../../controllers/todo.controller");
 const httpMocks = require("node-mocks-http");
 const TodoModel = require("../../model/todo.model");
 const newTodo = require("../mockData/new-todo.json");
-// const allTodos = require("../mockData/all-todos.json");
+const allTodos = require("../mockData/all-todos.json");
 
 // mocking with jest function
 TodoModel.create = jest.fn();
-// TodoModel.find = jest.fn();
+TodoModel.find = jest.fn();
 // TodoModel.findById = jest.fn();
 // TodoModel.findByIdAndUpdate = jest.fn();
 
@@ -17,7 +17,35 @@ beforeEach(() => {
   next = jest.fn();
 });
 
-//describe test suit
+//test suit for get todos
+describe("TodoController.getTodos", () => {
+  it("is a function", async () => {
+    expect(typeof TodoController.getTodos).toBe("function");
+  });
+
+  it("should get all the todos", async () => {
+    await TodoController.getTodos(req, res, next);
+    expect(TodoModel.find).toBeCalledWith({});
+  });
+
+  it("should return 200 status code ", async () => {
+    TodoModel.find.mockReturnValue(allTodos);
+    await TodoController.getTodos(req, res, next);
+    expect(res.statusCode).toBe(200);
+    expect(res._isEndCalled).toBeTruthy();
+    // console.log(res.body);
+    expect(res._getJSONData()).toStrictEqual(allTodos);
+  });
+  it("should handle errors", async () => {
+    errorMessage = { message: "no todos found" };
+    errorPromise = Promise.reject(errorMessage);
+    TodoModel.find.mockReturnValue(errorPromise);
+    await TodoController.getTodos(req, res, next);
+    expect(next).toBeCalledWith(errorMessage);
+  });
+});
+
+//test suit for create todo
 describe("TodoController.createTodo", () => {
   beforeEach(() => {
     req.body = newTodo;

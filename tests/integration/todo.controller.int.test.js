@@ -4,12 +4,22 @@ const newTodo = require("../mockData/new-todo.json");
 const request = require("supertest");
 const endPointUrl = "/todos/";
 const app = require("../../app");
+const { TestScheduler } = require("jest");
 // const { report } = require("../../app");
 // const { response } = require("express");
 // var constTodo;
 // // const { TestScheduler } = require("jest");
 
+// test suit
 describe("endpointUrl", () => {
+  test("GET" + endPointUrl, async () => {
+    const response = await request(app).get(endPointUrl);
+    expect(response.statusCode).toBe(200);
+    expect(Array.isArray(response.body)).toBeTruthy();
+    expect(response.body[0].title).toBeDefined();
+    expect(response.body[0].done).toBeDefined();
+  });
+
   it("POST" + endPointUrl, async () => {
     const response = await request(app).post(endPointUrl).send(newTodo);
     // console.log(response.body);
