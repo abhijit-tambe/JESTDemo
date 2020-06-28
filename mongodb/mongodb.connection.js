@@ -1,11 +1,11 @@
 const mongoose = require("mongoose");
 async function connect() {
   try {
-    await mongoose.connect("mongodb://localhost:27017/todo-tdd", {
+    await mongoose.connect("mongodb://localhost:27017/todo-tdd1", {
       useNewUrlParser: true,
     });
   } catch (err) {
-    console.log(err);
+    console.log("error connecting to the database" + err);
   }
 }
 
