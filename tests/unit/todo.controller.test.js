@@ -14,7 +14,7 @@ let req, res, next;
 beforeEach(() => {
   req = httpMocks.createRequest();
   res = httpMocks.createResponse();
-  next = null;
+  next = jest.fn();
 });
 
 //describe test suit
@@ -49,6 +49,16 @@ describe("TodoController.createTodo", () => {
     // using node mocks http module
     expect(res._getJSONData()).toStrictEqual(newTodo);
     // console.log(res.body);
+  });
+  it("should handle errors ", async () => {
+    const errorMessage = { message: "Done property missing" };
+    const rejectPromise = Promise.reject(errorMessage);
+    // mocking jest with rejected promise
+    TodoModel.create.mockReturnValue(rejectPromise);
+    // calling the function which jest will reject
+    await TodoController.createTodo(req, res, next);
+    //testing the called function next has the error message object
+    expect(next).toBeCalledWith(errorMessage);
   });
 });
 

@@ -7,9 +7,13 @@ exports.createTodo = async (req, res, next) => {
   //     console.log(err);
   //     next(err);
   //   }
-  const createModel = await TodoModel.create(req.body);
-  //   console.log(req.body.title);
-  res.status(201).json(createModel);
+  try {
+    const createModel = await TodoModel.create(req.body);
+    res.status(201).json(createModel);
+  } catch (err) {
+    // console.log(err);
+    next(err);
+  }
 };
 
 // exports.getTodos = async (req, res, next) => {

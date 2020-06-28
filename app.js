@@ -29,13 +29,11 @@ mongodb.connect();
 
 app.use(express.json());
 
-// app.use("/todos", todoRoutes);
-
-// app.use((error, req, res, next) => {
-//   res.status(500).json({ message: error.message });
-// });
+// the order of app.use path does matter errors must be below the path its routing to
 app.use("/todos", todoRoutes);
-
+app.use((error, req, res, next) => {
+  res.status(500).json({ message: error.message });
+});
 app.get("/", (req, res) => {
   res.json("Hello from Express");
 });
