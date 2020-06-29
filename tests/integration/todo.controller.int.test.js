@@ -9,7 +9,7 @@ const { TestScheduler } = require("jest");
 // const { response } = require("express");
 // var constTodo;
 // // const { TestScheduler } = require("jest");
-let firstTodo;
+let firstTodo, newTodoId;
 // test suit
 describe("endpointUrl", () => {
   it("POST" + endPointUrl, async () => {
@@ -18,6 +18,7 @@ describe("endpointUrl", () => {
     expect(response.statusCode).toBe(201);
     expect(response.body.title).toBe(newTodo.title);
     expect(response.body.done).toBe(newTodo.done);
+    newTodoId = response.body._id;
   });
 
   it("should return error 500 on malformed data" + endPointUrl, async () => {
@@ -54,6 +55,16 @@ describe("endpointUrl", () => {
       endPointUrl + "6ef7c66d77d76708f804d0a1"
     );
     expect(response.statusCode).toBe(404);
+  });
+
+  it("PUT" + endPointUrl + ":todoID", async () => {
+    const testData = { title: "new test todo data", done: true };
+    const response = await request(app)
+      .put(endPointUrl + newTodoId)
+      .send(testData);
+    expect(response.statusCode).toBe(200);
+    expect(response.body.title).toBe(testData.title);
+    expect(response.body.done).toBe(testData.done);
   });
 });
 
