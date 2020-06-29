@@ -8,43 +8,16 @@ const { findById, findByIdAndUpdate } = require("../../model/todo.model");
 const { request } = require("../../app");
 
 // mocking with jest function
-// TodoModel.create = jest.fn();
-// TodoModel.find = jest.fn();
-// TodoModel.findById = jest.fn();
-// TodoModel.findByIdAndUpdate = jest.fn();
-// TodoModel.findByIdAndDelete = jest.fn();
-
-jest.mock("../../model/todo.model");
+TodoModel.create = jest.fn();
+TodoModel.find = jest.fn();
+TodoModel.findById = jest.fn();
+TodoModel.findByIdAndUpdate = jest.fn();
 
 let req, res, next;
 beforeEach(() => {
   req = httpMocks.createRequest();
   res = httpMocks.createResponse();
   next = jest.fn();
-});
-
-//test for deletebyId
-describe("TodoController.deleteById", () => {
-  it("should have a delete function", async () => {
-    expect(typeof TodoController.deleteTodo).toBe("function");
-  });
-  it("should call findByIdAndDelete", async () => {
-    const todoId = "5ef7c66d77d76708f804d6a1";
-    req.params.todoId = todoId;
-    await TodoController.deleteTodo(req, res, next);
-    // TodoModel.findByIdAndDelete.mockReturnValue();
-    expect(TodoModel.findByIdAndDelete).toHaveBeenCalledWith(todoId);
-  });
-
-  it("should return status 200 and deleted todoModel", async () => {
-    const todoId = "5ef7c30c4169b195b48ed5bb";
-    req.params.todoId = todoId;
-    await TodoController.deleteTodo(req, res, next);
-    // TodoModel.findByIdAndDelete.mockReturnValue(newTodo);
-    expect(res.statusCode).toBe(200);
-    // expect(res._getJSONData()).toStrictEqual(newTodo);
-    // expect(res._isEndCalled()).toBeTruthy();
-  });
 });
 
 //test for update todoby id

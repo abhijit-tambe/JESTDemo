@@ -35,6 +35,10 @@ exports.getTodoById = async (req, res, next) => {
 };
 
 exports.updateTodo = async (req, res, next) => {
+  //   TodoModel.findByIdAndUpdate(req.params.todoId, req.body, {
+  //     new: true,
+  //     useFindAndModify: false,
+  //   });
   try {
     const todoModel = await TodoModel.findByIdAndUpdate(
       req.params.todoId,
@@ -54,13 +58,6 @@ exports.updateTodo = async (req, res, next) => {
   }
 };
 
-exports.deleteTodo = async (req, res, next) => {
-  const todoModel = TodoModel.findByIdAndDelete(req.params.todoId);
-  if (todoModel) {
-    console.log(todoModel);
-    res.status(200).json(todoModel);
-  }
-};
 // exports.getTodos = async (req, res, next) => {
 //   try {
 //     const allTodos = await TodoModel.find({});
