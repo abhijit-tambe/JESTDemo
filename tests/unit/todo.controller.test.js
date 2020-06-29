@@ -3,11 +3,13 @@ const httpMocks = require("node-mocks-http");
 const TodoModel = require("../../model/todo.model");
 const newTodo = require("../mockData/new-todo.json");
 const allTodos = require("../mockData/all-todos.json");
+const { TestScheduler } = require("jest");
+const { findById } = require("../../model/todo.model");
 
 // mocking with jest function
 TodoModel.create = jest.fn();
 TodoModel.find = jest.fn();
-// TodoModel.findById = jest.fn();
+TodoModel.findById = jest.fn();
 // TodoModel.findByIdAndUpdate = jest.fn();
 
 let req, res, next;
@@ -15,6 +17,40 @@ beforeEach(() => {
   req = httpMocks.createRequest();
   res = httpMocks.createResponse();
   next = jest.fn();
+});
+
+//test for get todo by id
+describe("TodoController.getTodoById", () => {
+  test("is a function", async () => {
+    expect(typeof TodoController.getTodoById).toBe("function");
+  });
+  it("findbyid is called", async () => {
+    req.params.todoId = "5ef7c66d77d76708f804d6a1";
+    await TodoController.getTodoById(req, res, next);
+    expect(TodoModel.findById).toHaveBeenCalledWith("5ef7c66d77d76708f804d6a1");
+  });
+
+  it("should return status code 200 and json body", async () => {
+    TodoModel.findById.mockReturnValue(newTodo);
+    await TodoController.getTodoById(req, res, next);
+    expect(res.statusCode).toBe(200);
+    expect(res._isEndCalled()).toBeTruthy();
+    expect(res._getJSONData()).toStrictEqual(newTodo);
+  });
+
+  it("should handle errors", async () => {
+    const errorMessage = { message: "error finding TodoModel" };
+    const errorPromise = Promise.reject(errorMessage);
+    TodoModel.findById.mockReturnValue(errorPromise);
+    await TodoController.getTodoById(req, res, next);
+    expect(next).toBeCalledWith(errorMessage);
+  });
+  it("should return status 404 when todo does not exist", async () => {
+    TodoModel.findById.mockReturnValue(null);
+    await TodoController.getTodoById(req, res, next);
+    expect(res.statusCode).toBe(404);
+    expect(res._isEndCalled()).toBeTruthy();
+  });
 });
 
 //test suit for get todos

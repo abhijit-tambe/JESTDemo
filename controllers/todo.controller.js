@@ -19,18 +19,30 @@ exports.getTodos = async (req, res, next) => {
   }
 };
 
-// exports.getTodoById = async (req, res, next) => {
-//   try {
-//     const todoModel = TodoModel.findById(req.params.todoId);
-//     if (todoModel) {
-//       res.status(200).json(todoModel);
-//     } else {
-//       res.status(404).send();
-//     }
-//   } catch (err) {
-//     next(err);
-//   }
-// };
+exports.getTodoById = async (req, res, next) => {
+  //   try {
+  //     const todoModel = TodoModel.findById(req.params.todoId);
+  //     if (todoModel) {
+  //       res.status(200).json(todoModel);
+  //     } else {
+  //       res.status(404).send();
+  //     }
+  //   } catch (err) {
+  //     next(err);
+  //   }
+  try {
+    const todoModel = await TodoModel.findById(req.params.todoId);
+    console.log(todoModel);
+    if (todoModel) {
+      res.status(200).json(todoModel);
+    } else {
+      res.status(404).send();
+    }
+  } catch (err) {
+    console.log(err);
+    next(err);
+  }
+};
 
 // exports.updateTodo = async (req, res, next) => {
 //   TodoModel.findByIdAndUpdate(req.params.todoId, req.body, {

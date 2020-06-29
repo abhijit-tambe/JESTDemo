@@ -9,17 +9,9 @@ const { TestScheduler } = require("jest");
 // const { response } = require("express");
 // var constTodo;
 // // const { TestScheduler } = require("jest");
-
+let firstTodo;
 // test suit
 describe("endpointUrl", () => {
-  test("GET" + endPointUrl, async () => {
-    const response = await request(app).get(endPointUrl);
-    expect(response.statusCode).toBe(200);
-    expect(Array.isArray(response.body)).toBeTruthy();
-    expect(response.body[0].title).toBeDefined();
-    expect(response.body[0].done).toBeDefined();
-  });
-
   it("POST" + endPointUrl, async () => {
     const response = await request(app).post(endPointUrl).send(newTodo);
     // console.log(response.body);
@@ -37,6 +29,31 @@ describe("endpointUrl", () => {
     expect(response.body).toStrictEqual({
       message: "Todo validation failed: done: Path `done` is required.",
     });
+  });
+
+  test("GET" + endPointUrl, async () => {
+    const response = await request(app).get(endPointUrl);
+    expect(response.statusCode).toBe(200);
+    expect(Array.isArray(response.body)).toBeTruthy();
+    expect(response.body[0].title).toBeDefined();
+    expect(response.body[0].done).toBeDefined();
+    firstTodo = response.body[0];
+  });
+
+  test("GET" + endPointUrl + ":todoId", async () => {
+    console.log(firstTodo._id);
+    const response = await request(app).get(endPointUrl + firstTodo._id);
+    expect(response.statusCode).toBe(200);
+    expect(response.body.title).toBe(firstTodo.title);
+    expect(response.body.done).toBe(firstTodo.done);
+  });
+
+  test("GET todoby id does not exist" + endPointUrl + ":todoId", async () => {
+    // req.params.todoId = "6ef7c66d77d76708f804d0a1";
+    const response = await request(app).get(
+      endPointUrl + "6ef7c66d77d76708f804d0a1"
+    );
+    expect(response.statusCode).toBe(404);
   });
 });
 
