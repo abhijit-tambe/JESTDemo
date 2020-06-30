@@ -42,7 +42,7 @@ describe("endpointUrl", () => {
   });
 
   test("GET" + endPointUrl + ":todoId", async () => {
-    console.log(firstTodo._id);
+    // console.log(firstTodo._id);
     const response = await request(app).get(endPointUrl + firstTodo._id);
     expect(response.statusCode).toBe(200);
     expect(response.body.title).toBe(firstTodo.title);
@@ -65,6 +65,14 @@ describe("endpointUrl", () => {
     expect(response.statusCode).toBe(200);
     expect(response.body.title).toBe(testData.title);
     expect(response.body.done).toBe(testData.done);
+  });
+
+  it("DELETE" + endPointUrl + ":todoID", async () => {
+    // const testData = { title: "new test todo data", done: true };
+    const delId = "5ef950e376e7cc987465804c";
+    const response = await request(app).delete(endPointUrl + delId);
+    // .send(testData);
+    expect(response.statusCode).toBe(200);
   });
 });
 

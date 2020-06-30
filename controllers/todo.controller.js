@@ -22,14 +22,14 @@ exports.getTodos = async (req, res, next) => {
 exports.getTodoById = async (req, res, next) => {
   try {
     const todoModel = await TodoModel.findById(req.params.todoId);
-    console.log(todoModel);
+    // console.log(todoModel);
     if (todoModel) {
       res.status(200).json(todoModel);
     } else {
       res.status(404).send();
     }
   } catch (err) {
-    console.log(err);
+    // console.log(err);
     next(err);
   }
 };
@@ -55,10 +55,20 @@ exports.updateTodo = async (req, res, next) => {
 };
 
 exports.deleteTodo = async (req, res, next) => {
-  const todoModel = TodoModel.findByIdAndDelete(req.params.todoId);
-  if (todoModel) {
-    console.log(todoModel);
-    res.status(200).json(todoModel);
+  try {
+    // const todoModel = await TodoModel.findByIdAndDelete(req.params.todoId, {
+    //   new: false,
+    //   useFindandModify: true,
+    // });
+    const todoModel = await TodoModel.findOneAndDelete(req.params.todoId);
+    if (todoModel) {
+      console.log(todoModel);
+      res.status(200).json(todoModel);
+    } else {
+      res.status(404).send();
+    }
+  } catch (err) {
+    next(err);
   }
 };
 // exports.getTodos = async (req, res, next) => {
